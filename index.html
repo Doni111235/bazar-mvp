@@ -1,25 +1,253 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>BAZAAR</title><style>
-*{box-sizing:border-box}body{margin:0;background:#f5f6f7;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#171717}.app{max-width:480px;margin:auto;padding-bottom:80px}.top{background:#fff;padding:18px 16px;position:sticky;top:0;z-index:2}.logo{font-size:28px;font-weight:800}.logo b{color:#19a957}.search{margin-top:12px;background:#f0f1f2;border-radius:14px;padding:12px;color:#777}.c{padding:16px}.cats{display:flex;gap:10px;overflow:auto}.cat,.card,.row,.total{background:#fff;border-radius:16px}.cat{min-width:80px;padding:12px;text-align:center}.cat strong{display:block;font-size:25px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}.card{padding-bottom:10px;position:relative;overflow:hidden}.pic{height:140px;display:grid;place-items:center;background:linear-gradient(135deg,#e7ecef,#fff);font-size:58px}.name{font-weight:700;padding:9px 10px 0}.price{font-weight:800;padding:5px 10px}.store{font-size:11px;color:#888;padding:0 10px}.add{position:absolute;right:9px;bottom:9px;border:0;border-radius:50%;background:#19a957;color:#fff;width:34px;height:34px;font-size:22px}.screen{display:none}.screen.on{display:block}h2{margin-top:4px}.btn{width:100%;border:0;border-radius:14px;background:#19a957;color:#fff;padding:15px;font-size:16px;font-weight:700;margin-top:12px}.row{padding:14px;margin:10px 0;display:flex;justify-content:space-between}.qty button{border:0;border-radius:8px;width:30px;height:30px}.total{padding:15px}.total div{display:flex;justify-content:space-between;margin:7px 0}.nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #ddd;display:flex;justify-content:center}.nav div{max-width:480px;width:100%;display:flex;justify-content:space-around;padding:9px}.nav button{border:0;background:none;color:#777;font-size:11px}.nav b{display:block;font-size:20px}.nav .sel{color:#19a957;font-weight:700}input,textarea{width:100%;padding:13px;border:1px solid #ddd;border-radius:12px;margin:7px 0 12px;font:inherit}
-</style></head><body><div class="app"><header class="top"><div class="logo">BAZ<b>AR</b></div><div class="search" onclick="go('search')">🔎 Что вы ищете?</div></header>
-<section id="home" class="screen on"><div class="c"><h2>Категории</h2><div class="cats"><div class="cat">📱<br>Телефоны</div><div class="cat">👕<br>Одежда</div><div class="cat">👟<br>Обувь</div><div class="cat">🏠<br>Дом</div><div class="cat">🚗<br>Авто</div></div><h2>Популярное</h2><div id="products" class="grid"></div></div></section>
-<section id="search" class="screen"><div class="c"><h2>Поиск</h2><input id="q" placeholder="Например: iPhone" oninput="renderSearch()"><div id="results" class="grid"></div></div></section>
-<section id="detail" class="screen"><div class="c"><button onclick="go('home')">← Назад</button><div id="big" class="pic" style="height:280px;border-radius:20px"></div><h2 id="dn"></h2><div id="dp" class="price" style="font-size:23px;padding-left:0"></div><p id="ds"></p><button class="btn" onclick="add(cur.id);go('cart')">🛒 В корзину</button></div></section>
-<section id="cart" class="screen"><div class="c"><h2>🛒 Корзина</h2><div id="ci"></div><div id="ct" class="total"></div><button class="btn" onclick="go('checkout')">Оформить заказ</button></div></section>
-<section id="checkout" class="screen"><div class="c"><h2>Оформление заказа</h2>Имя<input placeholder="Ваше имя">Телефон<input placeholder="+998 __ ___ __ __">Адрес<textarea placeholder="Адрес доставки"></textarea><button class="btn" onclick="order()">✅ Подтвердить заказ</button></div></section>
-<section id="orders" class="screen"><div class="c"><h2>📦 Мои заказы</h2><div class="row">Заказ №10001 <b>🟡 В обработке</b></div></div></section>
-<section id="profile" class="screen"><div class="c"><h2>👤 Профиль</h2><div class="row">🏪 Стать продавцом</div></div></section>
-<nav class="nav"><div><button class="sel" onclick="go('home',this)"><b>🏠</b>Главная</button><button onclick="go('search',this)"><b>🔎</b>Поиск</button><button onclick="go('cart',this)"><b>🛒</b>Корзина</button><button onclick="go('orders',this)"><b>📦</b>Заказы</button><button onclick="go('profile',this)"><b>👤</b>Профиль</button></div></nav></div>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BAZAAR</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f5f5f7;font-family:Arial,sans-serif;color:#111}
+.app{max-width:600px;margin:auto;background:#fff;min-height:100vh}
+header{background:#111;color:#fff;padding:18px 20px;font-size:25px;font-weight:700}
+.screen{display:none;padding:20px;padding-bottom:90px}
+.screen.on{display:block}
+.search{background:#f1f1f1;border:0;border-radius:14px;padding:15px;width:100%;font-size:16px;margin-bottom:18px}
+h2{margin-top:5px}
+.categories{display:flex;gap:8px;overflow:auto;margin-bottom:22px}
+.categories button{border:0;background:#eee;border-radius:12px;padding:11px 14px;white-space:nowrap}
+.products{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{background:#f7f7f7;border-radius:16px;padding:12px}
+.pic{height:120px;background:#eee;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:55px}
+.price{font-size:18px;font-weight:700;margin-top:8px}
+.name{margin-top:5px}
+.btn{width:100%;border:0;border-radius:13px;padding:14px;background:#111;color:#fff;font-size:16px;margin-top:12px}
+.btn.green{background:#168a45}
+input,textarea,select{width:100%;padding:14px;border:1px solid #ddd;border-radius:12px;font-size:16px;margin:7px 0 12px}
+textarea{min-height:90px}
+.back{border:0;background:#eee;border-radius:10px;padding:10px 14px;margin-bottom:15px}
+.nav{position:fixed;bottom:0;left:0;right:0;max-width:600px;margin:auto;background:#fff;border-top:1px solid #ddd;display:flex;justify-content:space-around;padding:10px 4px}
+.nav button{border:0;background:none;font-size:12px}
+.empty{text-align:center;color:#777;padding:30px}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+<header>BAZAAR</header>
+
+<section id="home" class="screen on">
+<input class="search" placeholder="🔎 Что вы ищете?" oninput="searchProducts(this.value)">
+<div class="categories">
+<button onclick="filterProducts('Телефоны')">📱 Телефоны</button>
+<button onclick="filterProducts('Одежда')">👕 Одежда</button>
+<button onclick="filterProducts('Обувь')">👟 Обувь</button>
+<button onclick="filterProducts('Дом')">🏠 Дом</button>
+</div>
+<h2>Популярные товары</h2>
+<div id="products" class="products"></div>
+</section>
+
+<section id="search" class="screen">
+<h2>🔎 Поиск</h2>
+<input class="search" placeholder="Введите название товара" oninput="searchProducts(this.value)">
+<div id="searchProducts" class="products"></div>
+</section>
+
+<section id="orders" class="screen">
+<h2>📦 Заказы</h2>
+<div class="empty">Пока заказов нет</div>
+</section>
+
+<section id="profile" class="screen">
+<h2>👤 Профиль</h2>
+<div id="profileContent"></div>
+</section>
+
+<section id="seller" class="screen">
+<button class="back" onclick="show('profile')">← Назад</button>
+<h2>🏪 Стать продавцом</h2>
+
+<label>Название магазина</label>
+<input id="shopName" placeholder="Например: Doniyor Store">
+
+<label>Телефон</label>
+<input id="shopPhone" placeholder="+998 90 123 45 67" type="tel">
+
+<button class="btn green" onclick="registerSeller()">Зарегистрировать магазин</button>
+</section>
+
+<section id="dashboard" class="screen">
+<button class="back" onclick="show('profile')">← Профиль</button>
+<h2>🏪 Мой магазин</h2>
+<div id="shopInfo"></div>
+<button class="btn green" onclick="show('addProduct')">➕ Добавить товар</button>
+<h3>Мои товары</h3>
+<div id="sellerProducts"></div>
+</section>
+
+<section id="addProduct" class="screen">
+<button class="back" onclick="show('dashboard')">← Назад</button>
+<h2>➕ Новый товар</h2>
+
+<label>Название товара</label>
+<input id="productName" placeholder="Например: iPhone 15">
+
+<label>Цена</label>
+<input id="productPrice" type="number" placeholder="6800000">
+
+<label>Категория</label>
+<select id="productCategory">
+<option>Телефоны</option>
+<option>Одежда</option>
+<option>Обувь</option>
+<option>Дом</option>
+</select>
+
+<label>Описание</label>
+<textarea id="productDescription" placeholder="Описание товара"></textarea>
+
+<button class="btn green" onclick="addProduct()">Опубликовать товар</button>
+</section>
+
+<nav class="nav">
+<button onclick="show('home')">🏠<br>Главная</button>
+<button onclick="show('search')">🔎<br>Поиск</button>
+<button onclick="show('orders')">📦<br>Заказы</button>
+<button onclick="show('profile')">👤<br>Профиль</button>
+</nav>
+
+</div>
+
 <script>
-const P=[['📱','iPhone 15 128GB',6800000,'Mobile Store'],['👟','Nike Air Max',520000,'Sport Shop'],['🎧','AirPods Pro',1250000,'TechnoUz'],['⌚','Apple Watch',3200000,'Smart Store']];let cart=[],cur;
-const money=n=>n.toLocaleString('ru-RU')+' сум';
-function card(p,i){return `<div class="card" onclick="detail(${i})"><div class="pic">${p[0]}</div><div class="name">${p[1]}</div><div class="price">${money(p[2])}</div><div class="store">🏪 ${p[3]}</div><button class="add" onclick="event.stopPropagation();add(${i})">+</button></div>`}
-function render(){products.innerHTML=P.map(card).join('');renderSearch();cartView()}
-function renderSearch(){let q=(document.getElementById('q')?.value||'').toLowerCase();results.innerHTML=P.map((p,i)=>[p,i]).filter(x=>x[0][1].toLowerCase().includes(q)).map(x=>card(x[0],x[1])).join('')}
-function go(id,b){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('on'));document.getElementById(id).classList.add('on');document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('sel'));if(b)b.classList.add('sel');if(id==='cart')cartView();scrollTo(0,0)}
-function detail(i){cur={id:i,p:P[i]};big.textContent=cur.p[0];dn.textContent=cur.p[1];dp.textContent=money(cur.p[2]);ds.textContent='🏪 '+cur.p[3]+' · ⭐ 4.8';go('detail')}
-function add(i){let x=cart.find(x=>x.id===i);x?x.n++:cart.push({id:i,n:1})}
-function cartView(){ci.innerHTML=cart.length?cart.map(x=>`<div class="row"><span>${P[x.id][0]} ${P[x.id][1]}<br><b>${money(P[x.id][2])}</b></span><span class="qty"><button onclick="chg(${x.id},-1)">−</button> ${x.n} <button onclick="chg(${x.id},1)">+</button></span></div>`).join(''):'<p style="text-align:center;padding:50px;color:#777">🛒<br>Корзина пока пустая</p>';let s=cart.reduce((a,x)=>a+P[x.id][2]*x.n,0);ct.innerHTML=`<div>Товары <b>${money(s)}</b></div><div>Доставка <b>20 000 сум</b></div><div><b>Итого ${money(s+20000)}</b></div>`}
-function chg(i,n){let x=cart.find(x=>x.id===i);x.n+=n;if(x.n<1)cart=cart.filter(x=>x.id!==i);cartView()}
-function order(){alert('✅ Заказ №10002 создан!');cart=[];go('orders')}
+let products=[
+{n:'iPhone 15 128GB',p:6800000,c:'Телефоны',e:'📱'},
+{n:'Nike Air Max',p:520000,c:'Обувь',e:'👟'},
+{n:'AirPods',p:850000,c:'Телефоны',e:'🎧'},
+{n:'Apple Watch',p:1900000,c:'Телефоны',e:'⌚'}
+];
+
+let seller=JSON.parse(localStorage.getItem('bazaarSeller')||'null');
+
+let savedProducts=JSON.parse(localStorage.getItem('bazaarProducts')||'[]');
+products=products.concat(savedProducts);
+
+function money(n){
+return Number(n).toLocaleString('ru-RU')+' сум';
+}
+
+function card(x){
+return `
+<div class="card">
+<div class="pic">${x.e||'🛍️'}</div>
+<div class="name">${x.n}</div>
+<div class="price">${money(x.p)}</div>
+</div>`;
+}
+
+function render(list=products){
+document.getElementById('products').innerHTML=list.map(card).join('');
+document.getElementById('searchProducts').innerHTML=list.map(card).join('');
+}
+
+function show(id){
+document.querySelectorAll('.screen').forEach(x=>x.classList.remove('on'));
+document.getElementById(id).classList.add('on');
+
+if(id==='profile')renderProfile();
+if(id==='dashboard')renderDashboard();
+}
+
+function searchProducts(q){
+q=q.toLowerCase();
+let list=products.filter(x=>x.n.toLowerCase().includes(q));
+render(list);
+}
+
+function filterProducts(c){
+render(products.filter(x=>x.c===c));
+}
+
+function registerSeller(){
+let name=document.getElementById('shopName').value.trim();
+let phone=document.getElementById('shopPhone').value.trim();
+
+if(!name||!phone){
+alert('Заполните название магазина и телефон');
+return;
+}
+
+seller={name,phone};
+localStorage.setItem('bazaarSeller',JSON.stringify(seller));
+
+alert('Магазин успешно зарегистрирован!');
+show('dashboard');
+}
+
+function renderProfile(){
+let box=document.getElementById('profileContent');
+
+if(seller){
+box.innerHTML=`
+<p>🏪 <b>${seller.name}</b></p>
+<p>📞 ${seller.phone}</p>
+<button class="btn green" onclick="show('dashboard')">🏪 Управление магазином</button>
+`;
+}else{
+box.innerHTML=`
+<p>Покупатель</p>
+<button class="btn" onclick="show('seller')">🏪 Стать продавцом</button>
+`;
+}
+}
+
+function renderDashboard(){
+document.getElementById('shopInfo').innerHTML=
+`<p>🏪 <b>${seller.name}</b></p><p>📞 ${seller.phone}</p>`;
+
+let mine=products.filter(x=>x.owner);
+document.getElementById('sellerProducts').innerHTML=
+mine.length?mine.map(card).join(''):'<div class="empty">У вас пока нет товаров</div>';
+}
+
+function addProduct(){
+let n=document.getElementById('productName').value.trim();
+let p=document.getElementById('productPrice').value;
+let c=document.getElementById('productCategory').value;
+let d=document.getElementById('productDescription').value.trim();
+
+if(!n||!p){
+alert('Введите название и цену');
+return;
+}
+
+let item={
+n:n,
+p:Number(p),
+c:c,
+e:'🛍️',
+description:d,
+owner:true
+};
+
+products.push(item);
+
+let saved=JSON.parse(localStorage.getItem('bazaarProducts')||'[]');
+saved.push(item);
+localStorage.setItem('bazaarProducts',JSON.stringify(saved));
+
+document.getElementById('productName').value='';
+document.getElementById('productPrice').value='';
+document.getElementById('productDescription').value='';
+
+alert('Товар опубликован!');
 render();
-</script></body></html>
+show('dashboard');
+}
+
+render();
+renderProfile();
+</script>
+
+</body>
+</html>
