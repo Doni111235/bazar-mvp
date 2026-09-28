@@ -1,245 +1,83 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>BAZAAR</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;background:#f5f5f7;font-family:Arial,sans-serif;color:#111}
-.app{max-width:600px;margin:auto;background:#fff;min-height:100vh;padding-bottom:64px}
-header{background:#111;color:#fff;padding:18px 20px;font-size:25px;font-weight:700}
-.screen{display:none;padding:20px}
-.screen.on{display:block}
-.search{background:#f1f1f1;border:0;border-radius:14px;padding:15px;width:100%;font-size:16px;margin-bottom:18px}
-h2{margin-top:5px}
-.categories{display:flex;gap:8px;overflow:auto;margin-bottom:22px}
-.categories button{border:0;background:#eee;border-radius:12px;padding:11px 14px;white-space:nowrap}
-.products{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.card{background:#f7f7f7;border-radius:16px;padding:12px}
-.pic{height:140px;background:#eee;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:55px;overflow:hidden}
-.pic img{width:100%;height:100%;object-fit:cover}
-.price{font-size:18px;font-weight:700;margin-top:8px}
-.name{margin-top:5px}
-.shop{font-size:13px;color:#777;margin-top:7px}
-.btn{width:100%;border:0;border-radius:13px;padding:14px;background:#111;color:#fff;font-size:16px;margin-top:12px;cursor:pointer}
-.btn.green{background:#168a45}
-.back{border:0;background:#eee;border-radius:10px;padding:10px 14px;margin-bottom:15px}
-.nav{position:fixed;bottom:0;left:0;right:0;max-width:600px;margin:auto;background:#fff;border-top:1px solid #ddd;display:flex;justify-content:space-around;padding:10px 4px;z-index:10}
-.nav button{border:0;background:none;font-size:12px;cursor:pointer}
-.empty{text-align:center;color:#777;padding:30px}
-input,textarea,select{width:100%;padding:14px;border:1px solid #ddd;border-radius:12px;font-size:16px;margin:7px 0 12px}
-textarea{min-height:90px}
-.notice{padding:12px;background:#f1f1f1;border-radius:12px;margin-bottom:15px}
-.error{color:#b00020}
-.loading{text-align:center;color:#777;padding:30px}
-</style>
-</head>
-<body>
-<div class="app">
-<header>BAZAAR</header>
+*{box-sizing:border-box}body{margin:0;background:#f5f5f7;font-family:Arial;color:#111}.app{max-width:600px;margin:auto;background:#fff;min-height:100vh;padding-bottom:70px}
+header{background:#111;color:#fff;padding:18px 20px;font-size:25px;font-weight:700}.screen{display:none;padding:20px}.screen.on{display:block}
+.search,input,textarea,select{width:100%;padding:14px;border:1px solid #ddd;border-radius:12px;font-size:16px;margin:7px 0 12px}.search{background:#f1f1f1;border:0;margin-bottom:18px}
+.categories{display:flex;gap:8px;overflow:auto;margin-bottom:22px}.categories button,.back{border:0;background:#eee;border-radius:10px;padding:10px 14px;white-space:nowrap}
+.products{display:grid;grid-template-columns:1fr 1fr;gap:12px}.card,.admin-card,.stat{background:#f7f7f7;border-radius:16px;padding:12px}.pic{height:120px;background:#eee;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:55px}.price{font-size:18px;font-weight:700;margin-top:8px}.muted{color:#777;font-size:14px}
+.btn{width:100%;border:0;border-radius:13px;padding:14px;background:#111;color:#fff;font-size:16px;margin-top:12px}.green{background:#168a45}.empty{text-align:center;color:#777;padding:30px}.error{color:#c62828;background:#fff0f0;padding:12px;border-radius:12px}
+.nav{position:fixed;bottom:0;left:0;right:0;max-width:600px;margin:auto;background:#fff;border-top:1px solid #ddd;display:flex;justify-content:space-around;padding:10px 4px;z-index:20}.nav button{border:0;background:none;font-size:12px}
+.admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:15px 0}.stat{padding:16px}.stat b{display:block;font-size:25px;margin-top:5px}.badge{display:inline-block;background:#e9e9e9;border-radius:10px;padding:5px 9px;font-size:13px}.section-title{margin-top:25px}
+</style></head>
+<body><div class="app"><header>BAZAAR</header>
 
-<section id="home" class="screen on">
-<input class="search" placeholder="🔎 Что вы ищете?" oninput="searchProducts(this.value)">
-<div class="categories">
-<button onclick="render(products)">Все</button>
-<button onclick="filterProducts('Телефоны')">📱 Телефоны</button>
-<button onclick="filterProducts('Одежда')">👕 Одежда</button>
-<button onclick="filterProducts('Обувь')">👟 Обувь</button>
-<button onclick="filterProducts('Дом')">🏠 Дом</button>
-</div>
-<h2>Популярные товары</h2>
-<div id="products" class="products"><div class="loading">Загрузка товаров...</div></div>
-</section>
+<section id="home" class="screen on"><input class="search" placeholder="🔎 Что вы ищете?" oninput="searchProducts(this.value)">
+<div class="categories"><button onclick="render(products)">Все</button><button onclick="filterProducts('Телефоны')">📱 Телефоны</button><button onclick="filterProducts('Одежда')">👕 Одежда</button><button onclick="filterProducts('Обувь')">👟 Обувь</button><button onclick="filterProducts('Дом')">🏠 Дом</button></div>
+<h2>Популярные товары</h2><div id="products" class="products"></div></section>
 
-<section id="search" class="screen">
-<h2>🔎 Поиск</h2>
-<input class="search" placeholder="Введите название товара" oninput="searchProducts(this.value)">
-<div id="searchProducts" class="products"></div>
-</section>
+<section id="search" class="screen"><h2>🔎 Поиск</h2><input class="search" placeholder="Введите название товара" oninput="searchProducts(this.value)"><div id="searchProducts" class="products"></div></section>
+<section id="orders" class="screen"><h2>📦 Заказы</h2><div id="ordersContent"><div class="empty">Загрузка...</div></div></section>
+<section id="profile" class="screen"><h2>👤 Профиль</h2><div id="profileContent"><div class="empty">Загрузка...</div></div></section>
 
-<section id="orders" class="screen">
-<h2>📦 Заказы</h2>
-<div id="ordersList"><div class="loading">Загрузка...</div></div>
-</section>
+<section id="seller" class="screen"><button class="back" onclick="show('profile')">← Назад</button><h2>🏪 Стать продавцом</h2>
+<label>Название магазина</label><input id="shopName" placeholder="Например: Doniyor Store"><label>Телефон</label><input id="shopPhone" placeholder="+998 90 123 45 67" type="tel"><button class="btn green" onclick="registerSeller()">Зарегистрировать магазин</button></section>
 
-<section id="profile" class="screen">
-<h2>👤 Профиль</h2>
-<div class="notice">Покупатель BAZAAR</div>
-<button class="btn" onclick="show('orders');loadOrders()">📦 Мои заказы</button>
-</section>
+<section id="dashboard" class="screen"><button class="back" onclick="show('profile')">← Профиль</button><h2>🏪 Мой магазин</h2><div id="shopInfo"></div><button class="btn green" onclick="show('addProduct')">➕ Добавить товар</button><h3>Мои товары</h3><div id="sellerProducts"></div></section>
 
-<section id="product" class="screen">
-<button class="back" onclick="show('home')">← Назад</button>
-<div id="productDetail"></div>
-</section>
+<section id="addProduct" class="screen"><button class="back" onclick="show('dashboard')">← Назад</button><h2>➕ Новый товар</h2>
+<label>Название товара</label><input id="productName" placeholder="Например: iPhone 15"><label>Цена</label><input id="productPrice" type="number" placeholder="6800000"><label>Категория</label><select id="productCategory"><option>Телефоны</option><option>Одежда</option><option>Обувь</option><option>Дом</option></select><label>Описание</label><textarea id="productDescription"></textarea><button class="btn green" onclick="addProduct()">Опубликовать товар</button></section>
 
-<nav class="nav">
-<button onclick="show('home')">🏠<br>Главная</button>
-<button onclick="show('search')">🔎<br>Поиск</button>
-<button onclick="show('orders');loadOrders()">📦<br>Заказы</button>
-<button onclick="show('profile')">👤<br>Профиль</button>
-</nav>
+<section id="admin" class="screen"><h2>👑 Админ-панель</h2><div id="adminContent"><div class="empty">Проверяем права...</div></div></section>
+
+<nav class="nav"><button onclick="show('home')">🏠<br>Главная</button><button onclick="show('search')">🔎<br>Поиск</button><button onclick="show('orders')">📦<br>Заказы</button><button onclick="show('profile')">👤<br>Профиль</button></nav>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPABASE_URL='https://evhpfeuvfmssvvvuqctw.supabase.co';
-const SUPABASE_KEY='sb_publishable_eKZ4dHphZIAQqxHAQDvYDg_sirWJoIF';
+const URL='https://evhpfeuvfmssvvvuqctw.supabase.co',KEY='sb_publishable_eKZ4dHphZIAQqxHAQDvYDg_sirWJoIF';
+const sb=supabase.createClient(URL,KEY);let currentUser=null,seller=null;
+let products=[{n:'iPhone 15 128GB',p:6800000,c:'Телефоны',e:'📱'},{n:'Nike Air Max',p:520000,c:'Обувь',e:'👟'},{n:'AirPods',p:850000,c:'Телефоны',e:'🎧'},{n:'Apple Watch',p:1900000,c:'Телефоны',e:'⌚'}];
 
-let products=[];
-let currentProduct=null;
+const esc=x=>String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+const money=x=>Number(x||0).toLocaleString('ru-RU')+' сум';
+function card(x){return '<div class="card"><div class="pic">'+(x.e||'🛍️')+'</div><div>'+esc(x.n||x.name||'Товар')+'</div><div class="price">'+money(x.p??x.price)+'</div></div>'}
+function render(a=products){products=a;document.getElementById('products').innerHTML=a.map(card).join('')||'<div class="empty">Товаров нет</div>';document.getElementById('searchProducts').innerHTML=a.map(card).join('')||'<div class="empty">Ничего не найдено</div>'}
+function filterProducts(c){render(products.filter(x=>(x.c||x.category)==c))}
+function searchProducts(q){q=q.toLowerCase();render(products.filter(x=>(x.n||x.name||'').toLowerCase().includes(q)))}
 
-async function api(path,options={}){
-  const res=await fetch(SUPABASE_URL+'/rest/v1/'+path,{
-    ...options,
-    headers:{
-      'apikey':SUPABASE_KEY,
-      'Authorization':'Bearer '+SUPABASE_KEY,
-      'Content-Type':'application/json',
-      'Prefer':options.prefer||'return=representation',
-      ...(options.headers||{})
-    }
-  });
-  const text=await res.text();
-  let data=null;
-  try{data=text?JSON.parse(text):null}catch(e){data=text}
-  if(!res.ok) throw new Error(data?.message||data?.hint||data?.details||text||('HTTP '+res.status));
-  return data;
-}
+async function tgId(){try{if(Telegram?.WebApp?.initDataUnsafe?.user)return Number(Telegram.WebApp.initDataUnsafe.user.id)}catch(e){}return 999001}
+async function loadUser(){let id=await tgId();let r=await sb.from('users').select('*').eq('telegram_id',id).maybeSingle();if(r.error){console.error(r.error);return null}return currentUser=r.data}
+async function loadProducts(){let r=await sb.from('products').select('id,created_at,shop_id,name,description,price,image_url,is_active,shops(name)').eq('is_active',true).order('created_at',{ascending:false});if(!r.error&&r.data)render(r.data.map(x=>({n:x.name,p:x.price,e:'🛍️',shop:x.shops?.name,...x})));else console.error(r.error)}
 
-function money(n){return Number(n||0).toLocaleString('ru-RU')+' сум'}
+function show(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('on'));document.getElementById(id).classList.add('on');if(id=='profile')renderProfile();if(id=='orders')loadOrders();if(id=='dashboard')renderDashboard();if(id=='admin')loadAdmin()}
 
-function card(x){
-  const image=x.image_url
-    ? `<img src="${escapeHtml(x.image_url)}" onerror="this.parentElement.innerHTML='🛍️'">`
-    : '🛍️';
-  return `<div class="card">
-    <div class="pic">${image}</div>
-    <div class="name">${escapeHtml(x.name)}</div>
-    <div class="shop">🏪 ${escapeHtml(x.shop_name||'Магазин')}</div>
-    <div class="price">${money(x.price)}</div>
-    <button class="btn" onclick="openProduct(${x.id})">Подробнее</button>
-  </div>`;
-}
+async function renderProfile(){if(!currentUser)await loadUser();let b=document.getElementById('profileContent');if(!currentUser){b.innerHTML='<div class="error">Пользователь не найден.</div>';return}
+let admin=currentUser.role==='admin'?'<button class="btn" onclick="show(\'admin\')">👑 Админ-панель</button>':'';
+if(currentUser.role==='seller')b.innerHTML='<p>🏪 <b>'+esc(currentUser.full_name||currentUser.username)+'</b></p><p>Роль: <span class="badge">seller</span></p>'+admin+'<button class="btn green" onclick="show(\'dashboard\')">🏪 Мой магазин</button>';
+else if(currentUser.role==='admin')b.innerHTML='<p>👑 <b>'+esc(currentUser.full_name||currentUser.username)+'</b></p><p>Роль: <span class="badge">admin</span></p>'+admin;
+else b.innerHTML='<p>👤 <b>'+esc(currentUser.full_name||currentUser.username)+'</b></p><p>Роль: <span class="badge">buyer</span></p><button class="btn" onclick="show(\'seller\')">🏪 Стать продавцом</button>'}
 
-function escapeHtml(v){
-  return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
-}
+async function registerSeller(){if(!currentUser)await loadUser();let name=shopName.value.trim(),phone=shopPhone.value.trim();if(!name||!phone)return alert('Заполните название и телефон');let r=await sb.from('shops').insert({owner_id:currentUser.id,name,phone,address:'Ташкент',is_active:true}).select().single();if(r.error)return alert('Ошибка: '+r.error.message);let u=await sb.from('users').update({role:'seller',phone}).eq('id',currentUser.id);if(u.error)return alert('Магазин создан, но роль не обновилась: '+u.error.message);currentUser.role='seller';seller=r.data;alert('Магазин создан!');show('dashboard')}
 
-function render(list){
-  const html=list.length?list.map(card).join(''):'<div class="empty">Товаров пока нет</div>';
-  document.getElementById('products').innerHTML=html;
-  document.getElementById('searchProducts').innerHTML=html;
-}
+async function renderDashboard(){if(!currentUser)await loadUser();if(!currentUser||!['seller','admin'].includes(currentUser.role))return show('profile');let r=await sb.from('shops').select('*').eq('owner_id',currentUser.id).order('id',{ascending:false}).limit(1);if(r.error)return shopInfo.innerHTML='<div class="error">'+esc(r.error.message)+'</div>';seller=r.data?.[0];if(!seller)return shopInfo.innerHTML='<div class="empty">Магазин не создан</div>';shopInfo.innerHTML='<p>🏪 <b>'+esc(seller.name)+'</b></p><p>📞 '+esc(seller.phone)+'</p>';let p=await sb.from('products').select('*').eq('shop_id',seller.id).order('id',{ascending:false});sellerProducts.innerHTML=p.data?.length?p.data.map(card).join(''):'<div class="empty">У вас пока нет товаров</div>'}
 
-function filterProducts(c){render(products.filter(x=>x.category===c))}
-function searchProducts(q){
-  q=q.toLowerCase().trim();
-  render(products.filter(x=>x.name.toLowerCase().includes(q)));
-}
+async function addProduct(){if(!seller)await renderDashboard();if(!seller)return;let n=productName.value.trim(),p=Number(productPrice.value),d=productDescription.value.trim();if(!n||!p)return alert('Введите название и цену');let r=await sb.from('products').insert({shop_id:seller.id,name:n,price:p,description:d,is_active:true});if(r.error)return alert('Ошибка: '+r.error.message);alert('Товар опубликован!');productName.value='';productPrice.value='';productDescription.value='';await loadProducts();show('dashboard')}
 
-function show(id){
-  document.querySelectorAll('.screen').forEach(x=>x.classList.remove('on'));
-  document.getElementById(id).classList.add('on');
-}
+async function loadOrders(){if(!currentUser)await loadUser();let b=document.getElementById('ordersContent');let r=await sb.from('orders').select('id,created_at,buyer_id,shop_id,status,total,phone,delivery_address,shops(name)').eq('buyer_id',currentUser.id).order('id',{ascending:false});if(r.error)return b.innerHTML='<div class="error">Ошибка загрузки заказов.<br>'+esc(r.error.message)+'</div>';b.innerHTML=r.data?.length?r.data.map(o=>'<div class="admin-card"><h3>📦 Заказ №'+o.id+'</h3><div class="muted">🏪 '+esc(o.shops?.name||'Магазин')+'</div><p>Статус: <span class="badge">'+esc(o.status)+'</span></p><b>'+money(o.total)+'</b><p>📍 '+esc(o.delivery_address||'')+'</p><p class="muted">📞 '+esc(o.phone||'')+'</p></div>').join(''):'<div class="empty">Пока заказов нет</div>'}
 
-async function loadProducts(){
-  try{
-    const data=await api('products?select=id,created_at,shop_id,name,description,price,image_url,is_active,shops(name)&is_active=eq.true&order=created_at.desc');
-    products=(data||[]).map(x=>({
-      ...x,
-      shop_name:x.shops?.name||'Магазин',
-      category:guessCategory(x.name,x.description)
-    }));
-    render(products);
-  }catch(e){
-    document.getElementById('products').innerHTML='<div class="empty error">Ошибка загрузки товаров.<br>'+escapeHtml(e.message)+'</div>';
-  }
-}
+async function loadAdmin(){if(!currentUser)await loadUser();let b=document.getElementById('adminContent');if(!currentUser||currentUser.role!=='admin'){b.innerHTML='<div class="error">Доступ запрещён.</div>';return}
+let [u,s,p,o]=await Promise.all([sb.from('users').select('id,telegram_id,username,full_name,phone,role,is_blocked').order('id'),sb.from('shops').select('id,owner_id,name,phone,address,is_active').order('id'),sb.from('products').select('id,shop_id,name,price,is_active').order('id',{ascending:false}),sb.from('orders').select('id,buyer_id,shop_id,status,total,phone,delivery_address').order('id',{ascending:false})]);
+let er=[u,s,p,o].find(x=>x.error);if(er)return b.innerHTML='<div class="error">Ошибка: '+esc(er.error.message)+'</div>';
+let U=u.data||[],S=s.data||[],P=p.data||[],O=o.data||[];
+b.innerHTML='<div class="admin-grid"><div class="stat">👥 Пользователи<b>'+U.length+'</b></div><div class="stat">🏪 Магазины<b>'+S.length+'</b></div><div class="stat">🛍️ Товары<b>'+P.length+'</b></div><div class="stat">📦 Заказы<b>'+O.length+'</b></div></div>'+
+'<h3 class="section-title">👥 Пользователи</h3>'+U.map(x=>'<div class="admin-card"><b>'+esc(x.full_name||x.username||'Без имени')+'</b><p class="muted">@'+esc(x.username||'—')+' · Telegram ID: '+esc(x.telegram_id)+'</p><p>Роль: <span class="badge">'+esc(x.role||'buyer')+'</span></p></div>').join('')+
+'<h3 class="section-title">🏪 Магазины</h3>'+S.map(x=>'<div class="admin-card"><b>🏪 '+esc(x.name)+'</b><p>Владелец ID: '+x.owner_id+'</p><span class="badge">'+(x.is_active?'Активен':'Выключен')+'</span></div>').join('')+
+'<h3 class="section-title">🛍️ Товары</h3>'+P.map(x=>'<div class="admin-card"><b>'+esc(x.name)+'</b><p>'+money(x.price)+' · shop_id: '+x.shop_id+'</p><span class="badge">'+(x.is_active?'Активен':'Скрыт')+'</span></div>').join('')+
+'<h3 class="section-title">📦 Заказы</h3>'+O.map(x=>'<div class="admin-card"><b>Заказ №'+x.id+'</b><p>'+money(x.total)+' · <span class="badge">'+esc(x.status)+'</span></p><p>Покупатель ID: '+x.buyer_id+' · Магазин ID: '+x.shop_id+'</p><p>📍 '+esc(x.delivery_address||'')+'</p></div>').join('')}
 
-function guessCategory(name,desc){
-  const s=(name+' '+(desc||'')).toLowerCase();
-  if(/телефон|iphone|samsung|xiaomi|airpods|watch/.test(s)) return 'Телефоны';
-  if(/обув|кроссов|nike|adidas|ботин/.test(s)) return 'Обувь';
-  if(/футбол|рубаш|куртк|одежд|плать|штанд/.test(s)) return 'Одежда';
-  if(/дом|мебел|кухн|стол|стул/.test(s)) return 'Дом';
-  return '';
-}
-
-async function openProduct(id){
-  currentProduct=products.find(x=>x.id===id);
-  if(!currentProduct)return;
-  const x=currentProduct;
-  const image=x.image_url?`<img src="${escapeHtml(x.image_url)}" style="width:100%;max-height:350px;object-fit:cover;border-radius:16px">`:'<div class="pic" style="height:260px">🛍️</div>';
-  document.getElementById('productDetail').innerHTML=`
-    ${image}
-    <h2>${escapeHtml(x.name)}</h2>
-    <div class="shop">🏪 ${escapeHtml(x.shop_name)}</div>
-    <div class="price">${money(x.price)}</div>
-    <p>${escapeHtml(x.description||'Описание отсутствует')}</p>
-    <button class="btn green" onclick="buyProduct()">🛒 Купить</button>`;
-  show('product');
-}
-
-async function buyProduct(){
-  if(!currentProduct)return;
-  const buyerId=1;
-  const shopId=currentProduct.shop_id;
-  const total=Number(currentProduct.price);
-
-  try{
-    const order=await api('orders',{
-      method:'POST',
-      body:JSON.stringify({
-        buyer_id:buyerId,
-        shop_id:shopId,
-        status:'pending',
-        total:total,
-        phone:'+998901234567',
-        delivery_address:'Ташкент'
-      })
-    });
-    const orderId=order[0]?.id;
-    if(!orderId)throw new Error('Не удалось получить номер заказа');
-
-    await api('order_items',{
-      method:'POST',
-      body:JSON.stringify({
-        order_id:orderId,
-        product_id:currentProduct.id,
-        quantity:1,
-        price:total
-      })
-    });
-
-    alert('Заказ успешно создан! №'+orderId);
-    await loadOrders();
-    show('orders');
-  }catch(e){
-    alert('Ошибка создания заказа: '+e.message);
-  }
-}
-
-async function loadOrders(){
-  const box=document.getElementById('ordersList');
-  box.innerHTML='<div class="loading">Загрузка заказов...</div>';
-  try{
-    const data=await api('orders?select=id,created_at,status,total,phone,delivery_address,shops(name)&buyer_id=eq.1&order=created_at.desc');
-    if(!data?.length){box.innerHTML='<div class="empty">Пока заказов нет</div>';return}
-    box.innerHTML=data.map(o=>`
-      <div class="card" style="margin-bottom:12px">
-        <b>Заказ №${o.id}</b>
-        <div class="shop">🏪 ${escapeHtml(o.shops?.name||'Магазин')}</div>
-        <p>Статус: <b>${escapeHtml(o.status)}</b></p>
-        <div class="price">${money(o.total)}</div>
-        <p>📍 ${escapeHtml(o.delivery_address||'')}</p>
-      </div>`).join('');
-  }catch(e){
-    box.innerHTML='<div class="empty error">Ошибка загрузки заказов.<br>'+escapeHtml(e.message)+'</div>';
-  }
-}
-
-loadProducts();
-</script>
-</body>
-</html>
+(async()=>{await loadUser();await loadProducts();await renderProfile()})();
+</script></body></html>
