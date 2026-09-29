@@ -1,192 +1,96 @@
 <!doctype html>
 <html lang="ru">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>BAZAAR</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>BAZAAR — Магазин</title>
 <style>
-*{box-sizing:border-box} body{margin:0;background:#f3f3f5;color:#111;font-family:Arial,sans-serif}
-.app{max-width:600px;margin:auto;background:#fff;min-height:100vh;padding-bottom:78px}
-header{background:#111;color:#fff;padding:20px;font-size:26px;font-weight:800}
-.screen{display:none;padding:20px}.screen.on{display:block}
-.search,input,textarea,select{width:100%;border:1px solid #ddd;border-radius:13px;padding:14px;font-size:16px;background:#fff}
-.search{background:#f1f1f1;border:0;margin-bottom:14px}
-.categories{display:flex;gap:8px;overflow:auto;margin-bottom:20px}.categories button{border:0;background:#eee;border-radius:12px;padding:11px 14px;white-space:nowrap}
-.products{display:grid;grid-template-columns:1fr 1fr;gap:12px}.card,.order,.panel{background:#f7f7f7;border-radius:16px;padding:14px;margin-bottom:12px}
-.pic{height:130px;background:#eee;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:54px;overflow:hidden}
-.pic img{width:100%;height:100%;object-fit:cover}.name{font-weight:600;margin-top:9px}.shop{font-size:13px;color:#777;margin-top:6px}.price{font-size:18px;font-weight:800;margin-top:8px}
-.btn{width:100%;border:0;border-radius:13px;padding:14px;background:#111;color:#fff;font-size:16px;margin-top:10px}.green{background:#168a45}.red{background:#c62828}.gray{background:#eee;color:#111}
-.nav{position:fixed;bottom:0;left:0;right:0;max-width:600px;margin:auto;background:#fff;border-top:1px solid #ddd;display:flex;justify-content:space-around;padding:9px 4px;z-index:20}
-.nav button{border:0;background:none;font-size:12px}.empty{text-align:center;color:#777;padding:30px 10px}.back{border:0;background:#eee;border-radius:10px;padding:10px 14px;margin-bottom:15px}
-.badge{display:inline-block;background:#eee;border-radius:8px;padding:5px 8px;font-size:13px}.admin{background:#fff3cd}.muted{color:#777;font-size:13px}
-label{display:block;font-size:14px;font-weight:600;margin-top:12px}.row{display:flex;gap:8px}.row>*{flex:1}
-h2{margin-top:4px}.error{color:#c00;background:#fff0f0;padding:12px;border-radius:12px;margin:10px 0}
-.footer{text-align:center;color:#888;font-size:12px;padding:10px}
+:root{--g:#08a65a;--g2:#087f48;--bg:#f5f6f7;--line:#e7e9eb;--muted:#7b8188;--text:#111}
+*{box-sizing:border-box}body{margin:0;background:#e8eaec;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:var(--text)}
+.app{width:min(430px,100%);min-height:100vh;margin:auto;background:var(--bg);padding-bottom:78px}
+button,input{font:inherit}button{border:0;background:none}.screen{display:none}.screen.active{display:block}
+.header{background:#fff;padding:13px 15px 11px;position:sticky;top:0;z-index:20;border-bottom:1px solid var(--line)}
+.top{display:flex;align-items:center;justify-content:space-between}.logo{font-weight:900;font-size:22px;letter-spacing:-.8px}.tiny{font-size:10px;color:#9aa0a5}.city{font-size:13px;margin-top:4px;font-weight:600}.city b{color:var(--g)}
+.search{height:40px;background:#f0f2f4;border-radius:12px;margin-top:10px;display:flex;align-items:center;padding:0 11px;color:#81878d;gap:7px}.search input{border:0;outline:0;background:none;width:100%;font-size:14px}
+.content{padding:12px 13px}.banner{height:126px;border-radius:15px;background:linear-gradient(135deg,#078d4b,#12bd67);color:#fff;padding:17px;position:relative;overflow:hidden}.banner h1{font-size:22px;line-height:1.03;margin:0 0 7px}.banner p{font-size:11px;line-height:1.35;width:60%;margin:0}.banner:after{content:"🛒";position:absolute;right:9px;bottom:-12px;font-size:78px;opacity:.25}
+.section{margin-top:15px}.sectionHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}.sectionHead h2{font-size:17px;margin:0}.green{color:var(--g);font-size:12px;font-weight:700}
+.cats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.cat{background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px 3px;text-align:center}.cat .i{font-size:26px;line-height:28px}.cat span{display:block;font-size:9px;margin-top:4px}
+.products{display:grid;grid-template-columns:1fr 1fr;gap:9px}.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:7px;position:relative}.pic{height:132px;border-radius:10px;background:linear-gradient(145deg,#eef1f3,#fafafa);display:flex;align-items:center;justify-content:center;font-size:67px}.heart{position:absolute;right:10px;top:10px;width:28px;height:28px;border-radius:50%;background:#fff;box-shadow:0 2px 8px #0001;font-size:17px;color:#ef3f43}.name{font-size:13px;font-weight:750;margin-top:7px}.price{font-size:14px;font-weight:900;margin-top:4px}.shop{font-size:10px;color:#777;margin-top:4px}
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(430px,100%);height:70px;background:#fff;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);z-index:50}.nav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:#747b82;font-size:9px}.nav b{font-size:20px}.nav .on{color:var(--g);font-weight:800}
+.page{background:#fff;min-height:100vh}.pageHead{background:#fff;padding:14px 15px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:15}.back{font-size:27px}.pageHead h2{font-size:20px;margin:0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:9px;padding:12px}.catLarge{background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px;text-align:center}.catLarge .i{font-size:45px}.catLarge b{font-size:13px;display:block;margin-top:6px}
+.filters{display:flex;gap:7px;overflow:auto;padding:10px 13px}.chip{white-space:nowrap;background:#fff;border:1px solid var(--line);padding:7px 10px;border-radius:10px;font-size:11px}.chip.active{background:var(--g);color:#fff;border-color:var(--g)}
+.results{padding:0 13px;display:flex;flex-direction:column;gap:8px}.result{background:#fff;border:1px solid var(--line);border-radius:13px;padding:8px;display:flex;gap:10px;align-items:center}.thumb{width:82px;height:82px;border-radius:10px;background:#f1f3f4;display:flex;align-items:center;justify-content:center;font-size:45px;flex:none}.ri{flex:1}.ri .name{margin:0}.add{background:var(--g);color:#fff;border-radius:9px;padding:8px 10px;font-size:17px}
+.detailImg{height:330px;background:#f1f3f4;display:flex;align-items:center;justify-content:center;font-size:150px}.detailBody{padding:15px}.detailBody h1{font-size:22px;margin:0 0 4px}.big{font-size:21px;font-weight:900}.seller{background:#fff;border:1px solid var(--line);border-radius:13px;padding:12px;margin:14px 0}.buyrow{display:grid;grid-template-columns:1fr 1fr;gap:8px}.primary,.outline{padding:13px;border-radius:12px;font-weight:800}.primary{background:var(--g);color:#fff}.outline{background:#fff;color:var(--g2);border:1px solid var(--g)}
+.cartItem{background:#fff;border:1px solid var(--line);border-radius:13px;padding:9px;display:flex;gap:9px;align-items:center;margin-bottom:8px}.cartItem .thumb{width:68px;height:68px;font-size:36px}.qty{display:flex;align-items:center;gap:11px;margin-top:7px}.qty button{width:27px;height:27px;background:#f0f2f4;border-radius:7px}.summary{background:#fff;border:1px solid var(--line);border-radius:14px;padding:13px;margin:12px 13px}.row{display:flex;justify-content:space-between;margin:7px 0}.total{font-size:19px;font-weight:900}.wide{width:100%;margin-top:8px}
+.checkout{padding:13px}.box{background:#fff;border:1px solid var(--line);border-radius:13px;padding:12px;margin-bottom:10px}.box h3{font-size:14px;margin:0 0 9px}.option{border:1px solid var(--line);border-radius:10px;padding:10px;margin-top:7px;font-size:12px;display:flex;justify-content:space-between}.option.selected{border-color:var(--g);background:#effaf4}
+.order{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:9px}.orderTop{display:flex;justify-content:space-between}.status{background:#dff7ea;color:#087f48;border-radius:7px;padding:5px 7px;font-size:10px;font-weight:800}.empty{text-align:center;padding:55px 20px;color:#777}
 </style>
 </head>
 <body>
 <div class="app">
-<header>BAZAAR</header>
 
-<section id="home" class="screen on">
-<input id="homeSearch" class="search" placeholder="🔎 Что вы ищете?" oninput="searchProducts(this.value)">
-<div class="categories">
-<button onclick="filterProducts('')">Все</button><button onclick="filterProducts('Телефоны')">📱 Телефоны</button>
-<button onclick="filterProducts('Одежда')">👕 Одежда</button><button onclick="filterProducts('Обувь')">👟 Обувь</button>
-<button onclick="filterProducts('Дом')">🏠 Дом</button>
-</div>
-<h2>Популярные товары</h2><div id="products" class="products"></div>
-</section>
+<section id="home" class="screen active">
+<header class="header"><div class="top"><div><div class="logo">BAZAAR</div><div class="city"><b>●</b> Ташкент ›</div></div><div>♧</div></div>
+<div class="search">⌕ <input id="homeSearch" placeholder="Что вы ищете?" oninput="searchFromHome(this.value)"></div></header>
+<div class="content">
+<div class="banner"><h1>Всё на одном<br>BAZAAR</h1><p>Покупайте у местных продавцов в одном приложении</p></div>
+<div class="section"><div class="sectionHead"><h2>Категории</h2><span class="green" onclick="show('categories')">Все ›</span></div><div class="cats" id="homeCats"></div></div>
+<div class="section"><div class="sectionHead"><h2>Популярные товары</h2><span class="green" onclick="show('search')">Смотреть все ›</span></div><div class="products" id="homeProducts"></div></div>
+</div></section>
 
-<section id="search" class="screen"><h2>🔎 Поиск</h2><input id="searchInput" class="search" placeholder="Название товара" oninput="searchProducts(this.value)"><div id="searchProducts" class="products"></div></section>
+<section id="categories" class="screen page"><div class="pageHead"><button class="back" onclick="show('home')">‹</button><h2>Категории</h2></div><div class="grid2" id="allCats"></div></section>
 
-<section id="orders" class="screen"><h2>📦 Заказы</h2><div id="ordersList"></div></section>
+<section id="search" class="screen page"><div class="pageHead"><button class="back" onclick="show('home')">‹</button><h2>Поиск</h2></div><div class="content"><div class="search" style="margin:0"><span>⌕</span><input id="searchInput" placeholder="Поиск товаров" oninput="renderSearch(this.value)"></div></div><div class="filters"><span class="chip active">Все</span><span class="chip">Магазины</span><span class="chip">Товары</span><span class="chip">Цена</span><span class="chip">Сортировка</span></div><div class="results" id="results"></div></section>
 
-<section id="profile" class="screen"><h2>👤 Профиль</h2><div id="profileContent"></div></section>
+<section id="product" class="screen page"><div class="pageHead"><button class="back" onclick="show('search')">‹</button><h2>Товар</h2><span style="margin-left:auto">♡　⌯</span></div><div class="detailImg" id="dImg"></div><div class="detailBody"><h1 id="dName"></h1><div class="big" id="dPrice"></div><div class="seller"><b id="dShop"></b><br><span style="color:#777;font-size:11px">⭐ 4.8 · 320 отзывов</span></div><div style="display:flex;justify-content:space-between;font-size:13px;margin:12px 0"><span>Память</span><b>128 GB</b></div><div style="display:flex;justify-content:space-between;font-size:13px;margin:12px 0"><span>Цвет</span><span>●　●　●　●</span></div><div class="buyrow"><button class="outline" onclick="addCurrent()">В корзину</button><button class="primary" onclick="buyCurrent()">Купить сейчас</button></div></div></section>
 
-<section id="seller" class="screen">
-<button class="back" onclick="show('profile')">← Назад</button><h2>🏪 Стать продавцом</h2>
-<label>Название магазина</label><input id="shopName" placeholder="Например: Doniyor Store">
-<label>Телефон</label><input id="shopPhone" placeholder="+998 90 123 45 67">
-<label>Описание</label><textarea id="shopDescription" placeholder="О магазине"></textarea>
-<label>Адрес</label><input id="shopAddress" placeholder="Ташкент">
-<button class="btn green" onclick="registerSeller()">Зарегистрировать магазин</button>
-</section>
+<section id="cart" class="screen page"><div class="pageHead"><h2>Корзина (<span id="cartCount">0</span>)</h2></div><div class="content" id="cartItems"></div><div class="summary"><div class="row"><span>Товары</span><b id="subtotal">0 сум</b></div><div class="row"><span>Доставка</span><b>20 000 сум</b></div><hr><div class="row total"><span>Итого</span><span id="cartTotal">0 сум</span></div><button class="primary wide" onclick="checkout()">Оформить заказ</button></div></section>
 
-<section id="dashboard" class="screen">
-<button class="back" onclick="show('profile')">← Профиль</button><h2>🏪 Мой магазин</h2><div id="shopInfo"></div>
-<button class="btn green" onclick="show('addProduct')">➕ Добавить товар</button><h3>Мои товары</h3><div id="sellerProducts"></div>
-</section>
+<section id="checkout" class="screen page"><div class="pageHead"><button class="back" onclick="show('cart')">‹</button><h2>Оформление заказа</h2></div><div class="checkout"><div class="box"><h3>Адрес доставки</h3><div class="option selected">📍 Ташкент, Чиланзар <b>›</b></div></div><div class="box"><h3>Способ доставки</h3><div class="option selected">🟢 Курьер <b>20 000 сум</b></div><div class="option">○ Самовывоз <b>Бесплатно</b></div></div><div class="box"><h3>Способ оплаты</h3><div class="option selected">🔵 Click</div><div class="option">🔵 Payme</div><div class="option">▣ Наличные при получении</div></div><div class="summary" style="margin:0"><div class="row total"><span>Итого</span><span id="checkoutTotal">0 сум</span></div><button class="primary wide" onclick="placeOrder()">Подтвердить заказ</button></div></div></section>
 
-<section id="addProduct" class="screen">
-<button class="back" onclick="show('dashboard')">← Назад</button><h2>➕ Новый товар</h2>
-<label>Название</label><input id="productName" placeholder="Например: Футболка BAZAAR">
-<label>Цена, сум</label><input id="productPrice" type="number" placeholder="150000">
-<label>Категория</label><select id="productCategory"><option>Телефоны</option><option>Одежда</option><option>Обувь</option><option>Дом</option></select>
-<label>Описание</label><textarea id="productDescription"></textarea>
-<label>Фото URL (необязательно)</label><input id="productImage" placeholder="https://...">
-<button class="btn green" onclick="addProduct()">Опубликовать товар</button>
-</section>
+<section id="orders" class="screen page"><div class="pageHead"><h2>Мои заказы</h2></div><div class="filters"><span class="chip active">Все</span><span class="chip">В обработке</span><span class="chip">Доставляется</span><span class="chip">Доставлен</span></div><div class="content" id="ordersList"></div></section>
 
-<section id="admin" class="screen">
-<h2>👑 Админ-панель</h2><div id="adminStats"></div>
-<h3>Пользователи</h3><div id="adminUsers"></div>
-<h3>Товары</h3><div id="adminProducts"></div>
-<h3>Заказы</h3><div id="adminOrders"></div>
-</section>
+<section id="profile" class="screen page"><div class="pageHead"><h2>Профиль</h2></div><div class="content"><div class="box" style="text-align:center"><div style="font-size:55px">👤</div><h2 style="margin:4px">Покупатель</h2><span style="color:#777;font-size:12px">@buyer</span></div><div class="box">📍 <b>Адрес доставки</b><br><span style="color:#777">Ташкент</span></div><div class="box">♡ Избранное</div><div class="box">⚙️ Настройки</div></div></section>
 
 <nav class="nav">
-<button onclick="show('home')">🏠<br>Главная</button><button onclick="show('search')">🔎<br>Поиск</button>
-<button onclick="show('orders')">📦<br>Заказы</button><button onclick="show('profile')">👤<br>Профиль</button>
+<button data-n="home" class="on" onclick="show('home')"><b>⌂</b>Главная</button>
+<button data-n="categories" onclick="show('categories')"><b>⊞</b>Категории</button>
+<button data-n="cart" onclick="show('cart')"><b>🛒</b>Корзина</button>
+<button data-n="orders" onclick="show('orders')"><b>▣</b>Заказы</button>
+<button data-n="profile" onclick="show('profile')"><b>♙</b>Профиль</button>
 </nav>
 </div>
 
 <script>
-const SUPABASE_URL='https://evhpfeuvfmssvvvuqctw.supabase.co';
-const SUPABASE_KEY='sb_publishable_eKZ4dHphZIAQqxHAQDvYDg_sirWJoIF';
-const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-let me=null, products=[], shop=null;
-
-function money(n){return Number(n||0).toLocaleString('ru-RU')+' сум'}
-function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
-function telegramUser(){
-  const tg=window.Telegram?.WebApp;
-  if(tg){tg.ready(); return tg.initDataUnsafe?.user||null}
-  return {id:999001,username:'test_user',first_name:'Тестовый пользователь'};
-}
-async function ensureUser(){
-  const u=telegramUser();
-  let {data,error}=await db.from('users').select('*').eq('telegram_id',u.id).maybeSingle();
-  if(error) throw error;
-  if(!data){
-    const r=await db.from('users').insert({telegram_id:u.id,username:u.username||null,full_name:[u.first_name,u.last_name].filter(Boolean).join(' '),role:u.id==999001?'admin':'buyer'}).select().single();
-    if(r.error) throw r.error; data=r.data;
-  }
-  me=data;
-}
-async function loadProducts(){
-  const r=await db.from('products').select('id,created_at,shop_id,name,description,price,image_url,is_active,shops(id,name,phone,address)').eq('is_active',true).order('created_at',{ascending:false});
-  if(r.error) throw r.error;
-  products=r.data||[]; renderProducts(products);
-}
-function productCard(x,admin=false){
- return `<div class="card"><div class="pic">${x.image_url?`<img src="${esc(x.image_url)}">`:'🛍️'}</div>
- <div class="name">${esc(x.name)}</div><div class="shop">🏪 ${esc(x.shops?.name||'Магазин')}</div>
- <div class="price">${money(x.price)}</div><div class="muted">${esc(x.description||'')}</div>
- ${admin?`<button class="btn red" onclick="toggleProduct(${x.id},${x.is_active})">${x.is_active?'Скрыть':'Показать'}</button>`:`<button class="btn" onclick="buy(${x.id})">Купить</button>`}</div>`;
-}
-function renderProducts(list){document.getElementById('products').innerHTML=list.length?list.map(productCard).join(''):'<div class="empty">Товаров пока нет</div>';document.getElementById('searchProducts').innerHTML=list.map(productCard).join('')}
-function searchProducts(q){q=q.toLowerCase();renderProducts(products.filter(x=>(x.name||'').toLowerCase().includes(q)||(x.description||'').toLowerCase().includes(q)))}
-function filterProducts(c){renderProducts(c?products.filter(x=>x.category===c):products)}
-async function buy(productId){
- const p=products.find(x=>x.id===productId); if(!p) return;
- const phone=prompt('Ваш телефон:',me?.phone||''); if(phone===null)return;
- const address=prompt('Адрес доставки:','Ташкент'); if(address===null)return;
- const r=await db.from('orders').insert({buyer_id:me.id,shop_id:p.shop_id,status:'pending',total:p.price,phone,delivery_address:address}).select().single();
- if(r.error){alert('Ошибка создания заказа: '+r.error.message);return}
- const ri=await db.from('order_items').insert({order_id:r.data.id,product_id:p.id,quantity:1,price:p.price});
- if(ri.error){alert('Заказ создан, но товар не добавлен: '+ri.error.message);return}
- alert('Заказ успешно создан! №'+r.data.id); show('orders');
-}
-async function loadOrders(){
- const r=await db.from('orders').select('id,created_at,buyer_id,shop_id,status,total,phone,delivery_address,shops(name)').eq('buyer_id',me.id).order('id',{ascending:false});
- const box=document.getElementById('ordersList');
- if(r.error){box.innerHTML='<div class="error">'+esc(r.error.message)+'</div>';return}
- box.innerHTML=r.data?.length?r.data.map(o=>`<div class="order"><b>📦 Заказ №${o.id}</b><div class="shop">🏪 ${esc(o.shops?.name||'Магазин')}</div><p>Статус: <span class="badge">${esc(o.status)}</span></p><div class="price">${money(o.total)}</div><p>📍 ${esc(o.delivery_address||'')}</p><p class="muted">📞 ${esc(o.phone||'')}</p></div>`).join(''):'<div class="empty">Пока заказов нет</div>'
-}
-function show(id){
- document.querySelectorAll('.screen').forEach(x=>x.classList.remove('on'));document.getElementById(id).classList.add('on');
- if(id==='profile')renderProfile(); if(id==='orders')loadOrders(); if(id==='dashboard')renderDashboard(); if(id==='admin')loadAdmin();
-}
-function renderProfile(){
- let box=document.getElementById('profileContent');
- box.innerHTML=`<div class="panel"><b>👤 ${esc(me?.full_name||me?.username||'Пользователь')}</b><p class="muted">@${esc(me?.username||'')}</p><p>Роль: <span class="badge ${me?.role==='admin'?'admin':''}">${esc(me?.role||'buyer')}</span></p></div>`;
- if(me?.role==='admin')box.innerHTML+=`<button class="btn" onclick="show('admin')">👑 Админ-панель</button>`;
- if(me?.role==='seller')box.innerHTML+=`<button class="btn green" onclick="show('dashboard')">🏪 Мой магазин</button>`;
- else if(me?.role==='buyer')box.innerHTML+=`<button class="btn green" onclick="show('seller')">🏪 Стать продавцом</button>`;
- box.innerHTML+=`<button class="btn gray" onclick="show('orders')">📦 Мои заказы</button>`;
-}
-async function registerSeller(){
- const name=document.getElementById('shopName').value.trim(),phone=document.getElementById('shopPhone').value.trim();
- if(!name||!phone)return alert('Заполните название и телефон');
- const s=await db.from('shops').insert({owner_id:me.id,name,description:document.getElementById('shopDescription').value.trim(),phone,address:document.getElementById('shopAddress').value.trim(),is_active:true}).select().single();
- if(s.error)return alert('Ошибка магазина: '+s.error.message);
- const u=await db.from('users').update({role:'seller',phone}).eq('id',me.id);
- if(u.error)return alert('Магазин создан, но роль не изменена: '+u.error.message);
- me.role='seller';shop=s.data;alert('Магазин зарегистрирован!');show('dashboard');
-}
-async function renderDashboard(){
- const r=await db.from('shops').select('*').eq('owner_id',me.id).maybeSingle(); if(r.error)return;
- shop=r.data;if(!shop){show('seller');return}
- document.getElementById('shopInfo').innerHTML=`<div class="panel"><b>🏪 ${esc(shop.name)}</b><p>${esc(shop.description||'')}</p><p>📞 ${esc(shop.phone||'')}</p><p>📍 ${esc(shop.address||'')}</p></div>`;
- const p=await db.from('products').select('*,shops(name)').eq('shop_id',shop.id).order('id',{ascending:false});
- document.getElementById('sellerProducts').innerHTML=p.data?.length?p.data.map(productCard).join(''):'<div class="empty">Товаров пока нет</div>';
-}
-async function addProduct(){
- if(!shop){alert('Сначала создайте магазин');return}
- const name=document.getElementById('productName').value.trim(),price=Number(document.getElementById('productPrice').value);
- if(!name||!price)return alert('Введите название и цену');
- const r=await db.from('products').insert({shop_id:shop.id,name,price,description:document.getElementById('productDescription').value.trim(),image_url:document.getElementById('productImage').value.trim()||null,is_active:true}).select().single();
- if(r.error)return alert('Ошибка: '+r.error.message);
- alert('Товар опубликован!');document.getElementById('productName').value='';document.getElementById('productPrice').value='';document.getElementById('productDescription').value='';document.getElementById('productImage').value='';await loadProducts();show('dashboard');
-}
-async function loadAdmin(){
- if(me.role!=='admin')return;
- const [u,p,o]=await Promise.all([
-  db.from('users').select('*').order('id',{ascending:false}),
-  db.from('products').select('*,shops(name)').order('id',{ascending:false}),
-  db.from('orders').select('*,shops(name)').order('id',{ascending:false})
- ]);
- document.getElementById('adminStats').innerHTML=`<div class="panel">👥 Пользователей: <b>${u.data?.length||0}</b> · 🛍️ Товаров: <b>${p.data?.length||0}</b> · 📦 Заказов: <b>${o.data?.length||0}</b></div>`;
- document.getElementById('adminUsers').innerHTML=(u.data||[]).map(x=>`<div class="panel"><b>#${x.id} ${esc(x.full_name||x.username||'')}</b><br>Telegram: ${x.telegram_id}<br>Роль: <span class="badge">${esc(x.role)}</span></div>`).join('');
- document.getElementById('adminProducts').innerHTML=(p.data||[]).map(x=>productCard(x,true)).join('');
- document.getElementById('adminOrders').innerHTML=(o.data||[]).map(x=>`<div class="panel"><b>📦 №${x.id}</b> · ${esc(x.status)} · <b>${money(x.total)}</b><br>🏪 ${esc(x.shops?.name||'')}<br>📍 ${esc(x.delivery_address||'')}</div>`).join('');
-}
-async function toggleProduct(id,current){const r=await db.from('products').update({is_active:!current}).eq('id',id);if(r.error)alert(r.error.message);else{await loadProducts();loadAdmin()}}
-async function init(){
- try{await ensureUser();await loadProducts();renderProfile()}catch(e){document.getElementById('products').innerHTML='<div class="error">Ошибка подключения: '+esc(e.message)+'</div>'}
-}
-init();
+const cats=[['📱','Телефоны'],['💻','Электроника'],['👕','Одежда'],['👟','Обувь'],['🪴','Дом и сад'],['🧸','Детские товары'],['🚗','Авто'],['🔨','Строительство'],['💄','Красота и здоровье'],['⚽','Спорт и отдых'],['🍎','Продукты'],['🛠️','Услуги']];
+const products=[
+{id:1,n:'iPhone 15 128GB',p:6800000,s:'Mobile Store',e:'📱'},
+{id:2,n:'Кроссовки Nike',p:520000,s:'Sport Market',e:'👟'},
+{id:3,n:'Наушники AirPods 1',p:1250000,s:'Apple Store',e:'🎧'},
+{id:4,n:'iPhone 14 128GB',p:5900000,s:'TechnoUz',e:'📱'},
+{id:5,n:'iPhone 13 128GB',p:4800000,s:'Apple Market',e:'📱'},
+{id:6,n:'iPhone 15 Pro 256GB',p:10200000,s:'Premium Store',e:'📱'}];
+let cart=[],orders=[],current=null;
+const money=n=>new Intl.NumberFormat('ru-RU').format(n)+' сум';
+const $=id=>document.getElementById(id);
+function show(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));$(id).classList.add('active');document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('on',x.dataset.n===id));if(id==='cart')renderCart();if(id==='orders')renderOrders();window.scrollTo(0,0)}
+function catHome(){ $('homeCats').innerHTML=cats.map(c=>`<button class="cat" onclick="category('${c[1]}')"><div class="i">${c[0]}</div><span>${c[1]}</span></button>`).slice(0,8).join('');$('allCats').innerHTML=cats.map(c=>`<button class="catLarge" onclick="category('${c[1]}')"><div class="i">${c[0]}</div><b>${c[1]}</b></button>`).join('')}
+function productCard(p){return `<article class="card" onclick="openProduct(${p.id})"><button class="heart" onclick="event.stopPropagation()">♡</button><div class="pic">${p.e}</div><div class="name">${p.n}</div><div class="price">${money(p.p)}</div><div class="shop">● ${p.s}</div></article>`}
+function home(){ $('homeProducts').innerHTML=products.slice(0,4).map(productCard).join('') }
+function openProduct(id){current=products.find(p=>p.id===id);$('dImg').textContent=current.e;$('dName').textContent=current.n;$('dPrice').textContent=money(current.p);$('dShop').textContent=current.s;show('product')}
+function add(id){let x=cart.find(q=>q.id===id);if(x)x.q++;else{let p=products.find(q=>q.id===id);cart.push({...p,q:1})}}
+function addCurrent(){add(current.id);show('cart')}
+function buyCurrent(){add(current.id);show('checkout');$('checkoutTotal').textContent=money(cart.reduce((a,x)=>a+x.p*x.q,0)+20000)}
+function renderCart(){let c=cart.reduce((a,x)=>a+x.q,0),sum=cart.reduce((a,x)=>a+x.p*x.q,0);$('cartCount').textContent=c;$('cartItems').innerHTML=cart.length?cart.map(x=>`<div class="cartItem"><div class="thumb">${x.e}</div><div style="flex:1"><b>${x.n}</b><div class="price">${money(x.p)}</div><div class="qty"><button onclick="qty(${x.id},-1)">−</button>${x.q}<button onclick="qty(${x.id},1)">+</button></div></div><button onclick="removeItem(${x.id})">🗑️</button></div>`).join(''):'<div class="empty">Корзина пока пустая</div>';$('subtotal').textContent=money(sum);$('cartTotal').textContent=money(sum+(cart.length?20000:0))}
+function qty(id,d){let x=cart.find(q=>q.id===id);x.q+=d;if(x.q<1)cart=cart.filter(q=>q.id!==id);renderCart()}
+function removeItem(id){cart=cart.filter(q=>q.id!==id);renderCart()}
+function checkout(){if(!cart.length)return;show('checkout');$('checkoutTotal').textContent=money(cart.reduce((a,x)=>a+x.p*x.q,0)+20000)}
+function placeOrder(){if(!cart.length)return;orders.unshift({id:12345+orders.length,date:new Date().toLocaleDateString('ru-RU'),items:[...cart],status:'В обработке'});cart=[];show('orders');renderOrders()}
+function renderOrders(){$('ordersList').innerHTML=orders.length?orders.map(o=>`<div class="order"><div class="orderTop"><b>Заказ №${o.id}</b><span class="status">${o.status}</span></div><div style="font-size:11px;color:#777;margin:6px 0">${o.date}</div>${o.items.map(x=>`<div style="display:flex;gap:8px;align-items:center;margin-top:8px"><div class="thumb" style="width:58px;height:58px;font-size:30px">${x.e}</div><div><b>${x.n}</b><br>${money(x.p)} · x${x.q}</div></div>`).join('')}</div>`).join(''):'<div class="empty">У вас пока нет заказов</div>'}
+function renderSearch(q=''){let a=q?products.filter(p=>(p.n+p.s).toLowerCase().includes(q.toLowerCase())):products;$('results').innerHTML=a.map(p=>`<div class="result" onclick="openProduct(${p.id})"><div class="thumb">${p.e}</div><div class="ri"><div class="name">${p.n}</div><div class="price">${money(p.p)}</div><div class="shop">${p.s} · ⭐ 4.8</div></div><button class="add" onclick="event.stopPropagation();add(${p.id})">🛒</button></div>`).join('')}
+function searchFromHome(q){show('search');$('searchInput').value=q;renderSearch(q)}
+function category(c){show('search');$('searchInput').value=c;renderSearch(c)}
+catHome();home();renderSearch();
 </script>
 </body></html>
